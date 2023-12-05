@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@wagmi/chains": "^1.8.0",
+    "@yearn-finance/web-lib": "^3.0.82",
+    "next": "14.0.3",
+    "pino-pretty": "^10.2.3",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "14.0.3"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "typescript": "^5",
