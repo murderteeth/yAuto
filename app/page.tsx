@@ -8,6 +8,7 @@ import Header from '@/components/header'
 import AddressInput, { TInputAddressLike } from '@/components/fields/AddressInput'
 import { useState } from 'react'
 import Input from '@/components/fields/Input'
+import Select from '@/components/fields/Select'
 
 export default function Home() {
   const [address, setAddress] = useState<TInputAddressLike>({ address: undefined, label: '', isValid: false })
@@ -34,10 +35,19 @@ export default function Home() {
 
         <div className="w-full px-2 sm:px-64 py-6 sm:py-8 flex flex-col gap-4 bg-pink-900/20 rounded">
           <Input type="text" defaultValue="" placeholder="Strategy name" />
-          <Input type="text" defaultValue="" placeholder="Network" />
+          <Select>
+            <option value="" selected>Select a network..</option>
+            <option value="mainnet">Mainnet</option>
+            <option value="polygon">Polygon</option>
+          </Select>
           <AddressInput value={address} placeholder='Strategy address 0x..' onChangeValue={setAddress} />
           <Input type="text" defaultValue="" placeholder="Strategy repo url" />
-          <Input type="text" defaultValue="" placeholder="Frequency" />
+          <Select>
+            <option value="" selected>Select automation frequency..</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </Select>
           <div className="mt-6 flex justify-end">
             <Button
               onClick={() => {}}
