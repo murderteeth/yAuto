@@ -56,6 +56,21 @@ const config: Config = {
 			}
     },
   },
-  plugins: [],
+  plugins: [
+		function ({ matchVariant }: { matchVariant: any }) {
+			matchVariant(
+				'has',
+				(value: any) => {
+					return `&:has(${value})`
+				},
+				{
+					values: {
+						checked: 'input:checked',
+						nothingselected: 'option[value=""]:checked',
+					},
+				}
+			)
+		},
+	],
 }
 export default config
