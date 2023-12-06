@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import '@rainbow-me/rainbowkit/styles.css'
-import './yearn.css'
 import './globals.css'
+import './yearn.css'
 
 const sans = localFont({
   variable: '--font-aeonik-sans',

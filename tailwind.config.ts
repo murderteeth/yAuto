@@ -1,5 +1,8 @@
 import { join } from 'path'
 import type { Config } from 'tailwindcss'
+const plugin = require('tailwindcss/plugin')
+const {default: flattenColorPalette} = require('tailwindcss/lib/util/flattenColorPalette')
+const {toRgba} = require('tailwindcss/lib/util/withAlphaVariable')
 
 const config: Config = {
 	presets: [require('@yearn-finance/web-lib/tailwind.config.cjs')],
