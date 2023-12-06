@@ -73,7 +73,7 @@ function WalletSelector(): ReactElement {
 						<span
 							className={`relative hidden h-8 cursor-pointer items-center justify-center
 								border border-transparent bg-neutral-0 
-								px-2 text-xs font-normal text-neutral-900 transition-all md:flex`}>
+								px-2 text-xs font-normal text-neutral-900 transition-all md:flex rounded`}>
 							{'Connect wallet'}
 						</span>
 					</span>

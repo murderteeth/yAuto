@@ -34,7 +34,7 @@ function LogoPopover(): ReactElement {
 				leaveTo={'opacity-0 translate-y-1'}>
 				<Popover.Panel
 					className={'absolute left-1/2 z-10 mt-0 w-80 -translate-x-1/2 px-4 pt-4 sm:px-0 md:w-96'}>
-					<div className={'overflow-hidden border border-pink-200/40 shadow-lg'}>
+					<div className={'overflow-hidden border border-pink-200/40 rounded shadow-lg'}>
 						<div className={'relative grid grid-cols-2 bg-neutral-900 md:grid-cols-3'}>
 							{Object.values(APPS).map(({name, href, icon}): ReactElement => {
 								return (

@@ -6,7 +6,7 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(({ className, ...props }, ref) => (
   <input ref={ref} {...props} className={`
-    px-4 py-2 
+    rounded px-4 py-2
 		bg-pink-800/40
 		border border-transparent
     hover:border-pink-600

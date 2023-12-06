@@ -24,10 +24,10 @@ export default function Home() {
             <h1 className="font-[900] text-6xl">yHaaS Whitelist</h1>
             <div className="pl-4 flex flex-col gap-2 border-l-4 border-pink-400">
               <p className="text-xl">
-                You have no strategy anon. Let's fix that!
+                You have no strategy anon. Let&apos;s fix that!
               </p>
               <p>
-                Here's some more info about yHaaS. IE, what it stands for, what it does, why that's important, and how to register.
+                Here&apos;s some more info about yHaaS. IE, what it stands for, what it does, why that&apos;s important, and how to register.
               </p>
             </div>
           </div>

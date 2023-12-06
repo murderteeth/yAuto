@@ -6,7 +6,7 @@ type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(({ className, ...props }, ref) => (
   <select ref={ref} {...props} className={`
-    px-4 py-2 
+    rounded px-4 py-2 
 		bg-pink-800/40
 		border border-transparent
     hover:border-pink-600
