@@ -10,6 +10,7 @@ import {performBatchedUpdates} from '@yearn-finance/web-lib/utils/performBatched
 
 import type {ReactElement} from 'react';
 import type {TAddress} from '@yearn-finance/web-lib/types';
+import Input from './Input';
 
 export type TInputAddressLike = {
 	address: TAddress | undefined;
@@ -24,10 +25,12 @@ export const defaultInputAddressLike: TInputAddressLike = {
 
 function AddressInput({
 	value,
+	placeholder,
 	onChangeValue,
 	handleKeyDown
 }: {
 	value: TInputAddressLike,
+	placeholder?: string,
 	onChangeValue: (value: TInputAddressLike) => void,
 	handleKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }): ReactElement {
@@ -89,8 +92,8 @@ function AddressInput({
 
 	return (
 		<>
-			<div className={'flex h-10 w-full items-center bg-pink-800/40 p-2 transition-colors'}>
-				<input
+			<div className={'relative flex w-full items-center transition-colors'}>
+				<Input
 					aria-invalid={status === 'invalid'}
 					onFocus={async (): Promise<void> => {
 						isFocused.current = true;
@@ -103,16 +106,13 @@ function AddressInput({
 					required
 					autoComplete={'off'}
 					spellCheck={false}
-					placeholder={'0x...'}
+					placeholder={placeholder || '0x...'}
 					type={'text'}
 					value={value.label}
 					onKeyDown={handleKeyDown}
-					className={
-						'w-full overflow-x-scroll truncate border-none bg-transparent px-0 py-4 pr-2 font-mono text-sm font-bold outline-none scrollbar-none'
-					}
+					className={`w-full overflow-x-scroll truncate scrollbar-none`}
 				/>
-				<label
-					className="relative h-4 w-4 pr-4">
+				<label className="absolute right-2 sm:right-4 h-4 w-4">
 					<span className={status === 'invalid' || status === 'warning' ? 'tooltip' : 'pointer-events-none'}>
 						<div className={'pointer-events-none relative h-4 w-4'}>
 							<IconCheck

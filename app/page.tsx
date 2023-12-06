@@ -7,6 +7,7 @@ import { localhost, mainnet, polygon } from '@wagmi/chains'
 import Header from '@/components/header'
 import AddressInput, { TInputAddressLike } from '@/components/fields/AddressInput'
 import { useState } from 'react'
+import Input from '@/components/fields/Input'
 
 export default function Home() {
   const [address, setAddress] = useState<TInputAddressLike>({ address: undefined, label: '', isValid: false })
@@ -14,8 +15,11 @@ export default function Home() {
     <>
       <Header />
       <main className="relative w-6xl max-w-6xl mx-auto flex min-h-screen pt-[6rem] flex-col items-center justify-start gap-8">
-        <div className="w-full flex items-center justify-between">
-          <div className="w-1/2 flex flex-col gap-8">
+        <div className="w-full px-4 flex items-center justify-between gap-4 bg-pink-900/20 rounded">
+          <div className="w-[40%] py-8 flex items-center justify-center rounded">
+            <Image priority={true} src="/otto.png" alt="yAuto" width={425} height={256} className="p-2 border-2 border-pink-400 rounded" />
+          </div>
+          <div className="w-[60%] flex flex-col gap-8">
             <h1 className="font-[900] text-6xl">yHaaS Whitelist</h1>
             <div className="pl-4 flex flex-col gap-2 border-l-4 border-pink-400">
               <p className="text-xl">
@@ -26,14 +30,15 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="w-1/2 py-8 flex items-center justify-center rounded">
-            <Image priority={true} src="/otto.png" alt="yAuto" width={280} height={280} className="p-2 border-2 border-pink-400 rounded" />
-          </div>
         </div>
 
-        <div className="w-full p-8 flex flex-col gap-4 bg-pink-900/20 rounded">
-          <AddressInput value={address} onChangeValue={setAddress} />
-          <div className="py-4 flex justify-end">
+        <div className="w-full px-2 sm:px-64 py-6 sm:py-8 flex flex-col gap-4 bg-pink-900/20 rounded">
+          <Input type="text" defaultValue="" placeholder="Strategy name" />
+          <Input type="text" defaultValue="" placeholder="Network" />
+          <AddressInput value={address} placeholder='Strategy address 0x..' onChangeValue={setAddress} />
+          <Input type="text" defaultValue="" placeholder="Strategy repo url" />
+          <Input type="text" defaultValue="" placeholder="Frequency" />
+          <div className="mt-6 flex justify-end">
             <Button
               onClick={() => {}}
               isBusy={false}
