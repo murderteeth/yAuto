@@ -13,6 +13,7 @@ const nextConfig = {
     }]
   },
   env: {
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     WALLETCONNECT_PROJECT_NAME: process.env.WALLETCONNECT_PROJECT_NAME,
     WALLETCONNECT_PROJECT_ID: process.env.WALLETCONNECT_PROJECT_ID,
     SMOL_ASSETS_URL: process.env.SMOL_ASSETS_URL,

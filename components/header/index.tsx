@@ -74,7 +74,7 @@ function WalletSelector(): ReactElement {
 							className={`relative hidden h-8 cursor-pointer items-center justify-center
 								border border-transparent bg-neutral-0 
 								px-2 text-xs font-normal text-neutral-900 transition-all md:flex rounded`}>
-							{'Connect wallet'}
+							{'Sign in with Ethereum'}
 						</span>
 					</span>
 				)}
