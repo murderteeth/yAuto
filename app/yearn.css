@@ -74,7 +74,7 @@
 	--color-error-300: 328 100% 95%;
 	--color-error-200: 328 100% 90%;
 
-	--default-rounded: 0.25rem;
+	--default-rounded: 0;
 }
 
 body {@apply text-neutral-0;}

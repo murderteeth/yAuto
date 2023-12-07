@@ -15,6 +15,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+			borderRadius: {
+				DEFAULT: 'var(--default-rounded)'
+			},
       fontFamily: {
         sans: ['var(--font-aeonik-sans)'],
         mono: ['var(--font-aeonik-mono)'],

@@ -16,9 +16,9 @@ export default function Home() {
     <>
       <Header />
       <main className="relative w-6xl max-w-6xl mx-auto flex min-h-screen pt-[6rem] flex-col items-center justify-start gap-8">
-        <div className="w-full px-4 flex items-center justify-between gap-4 bg-pink-900/20 rounded">
+        <div className="w-full px-12 flex items-center justify-between gap-12 bg-pink-900/20 rounded">
           <div className="w-[40%] py-8 flex items-center justify-center rounded">
-            <Image priority={true} src="/otto.png" alt="yAuto" width={425} height={256} className="p-2 border-2 border-pink-400 rounded" />
+            <Image priority={true} src="/otto.png" alt="yAuto" width={425} height={256} className="p-4 border-2 border-pink-400 rounded" />
           </div>
           <div className="w-[60%] flex flex-col gap-8">
             <h1 className="font-[900] text-6xl">yHaaS Whitelist</h1>
@@ -27,7 +27,7 @@ export default function Home() {
                 You have no strategy anon. Let&apos;s fix that!
               </p>
               <p>
-                Here&apos;s some more info about yHaaS. IE, what it stands for, what it does, why that&apos;s important, and how to register.
+                TODO: Here&apos;s some more info about yHaaS. IE, what it stands for, what it does, why that&apos;s important, and how to register.
               </p>
             </div>
           </div>
