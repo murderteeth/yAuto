@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { getIronSession } from 'iron-session'
 import { SessionData, sessionOptions } from '../session'
+import { db } from '../../db'
 
-// TODO: Before going to production, you likely want to invalidate nonces on logout to prevent replay attacks through session duplication (e.g. store expired nonce and make sure they can't be used again).
-// https://wagmi.sh/examples/sign-in-with-ethereum
-async function handler() {  
+async function handler() {
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+  const { nonce } = session
   await session.destroy()
+  await db.query(`INSERT INTO nonce_bin (nonce) VALUES ($1);`, [nonce])
   return NextResponse.json({ ok: true })
 }
 

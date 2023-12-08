@@ -6,12 +6,31 @@ import { Button } from '@yearn-finance/web-lib/components/Button'
 import { localhost, mainnet, polygon } from '@wagmi/chains'
 import Header from '@/components/header'
 import AddressInput, { TInputAddressLike } from '@/components/fields/AddressInput'
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import Input from '@/components/fields/Input'
 import Select from '@/components/fields/Select'
 
 export default function Home() {
+  const [name, setName] = useState<string | undefined>(undefined)
+  const [chainId, setChainId] = useState<string | undefined>(undefined)
   const [address, setAddress] = useState<TInputAddressLike>({ address: undefined, label: '', isValid: false })
+  const [repo, setRepo] = useState<string | undefined>(undefined)
+  const [frequency, setFrequency] = useState<string | undefined>(undefined)
+
+  const disabled = useMemo(() => 
+    !(name && chainId && address.isValid && repo && frequency)
+  , [name, chainId, address, repo, frequency])
+
+  const submit = useCallback(async () => {
+		await fetch('/api/whitelist', {
+			method: 'POST', 
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ 
+        name, chainId, address: address.address, repo, frequency 
+      })
+		})
+  }, [name, chainId, address, repo, frequency])
+
   return <WithYearn supportedChains={[mainnet, polygon, localhost]}>
     <>
       <Header />
@@ -34,15 +53,15 @@ export default function Home() {
         </div>
 
         <div className="w-full px-2 sm:px-64 py-6 sm:py-8 flex flex-col gap-4 bg-pink-900/20 rounded">
-          <Input type="text" defaultValue="" placeholder="Strategy name" />
-          <Select defaultValue={''}>
+          <Input type="text" placeholder="Strategy name" defaultValue={name} onChange={(e) => setName(e.target.value)} />
+          <Select defaultValue={chainId} onChange={(e) => setChainId(e.target.value)}>
             <option value="">Select a network..</option>
-            <option value="mainnet">Mainnet</option>
-            <option value="polygon">Polygon</option>
+            <option value="1">Mainnet</option>
+            <option value="137">Polygon</option>
           </Select>
           <AddressInput value={address} placeholder='Strategy address 0x..' onChangeValue={setAddress} />
-          <Input type="text" defaultValue="" placeholder="Strategy repo url" />
-          <Select defaultValue={''}>
+          <Input type="text" placeholder="Strategy repo url" defaultValue={repo} onChange={(e) => setRepo(e.target.value)} />
+          <Select defaultValue={frequency} onChange={(e) => setFrequency(e.target.value)}>
             <option value="">Select automation frequency..</option>
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
@@ -50,9 +69,9 @@ export default function Home() {
           </Select>
           <div className="mt-6 flex justify-end">
             <Button
-              onClick={() => {}}
+              onClick={submit}
               isBusy={false}
-              isDisabled={false}
+              isDisabled={disabled}
               className={'w-fit border-none'}>
               Apply for yHaaS whitelist
             </Button>

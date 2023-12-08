@@ -98,7 +98,7 @@ function WalletSelector(): ReactElement {
 		if(!verify.ok) throw new Error('Bad message!!')
 
 		set_siweState(current => ({ ...current, signingIn: false, signedIn: true }))
-	}, [address, chainId, nonce])
+	}, [address, chainId, nonce, signMessageAsync])
 
 	const signOut = useCallback(async () => {
 		await fetch('/api/siwe/signout', {
