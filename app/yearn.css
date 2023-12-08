@@ -168,7 +168,7 @@ label[aria-invalid="true"] {
 	&[data-variant="filled"] {
 		@apply text-neutral-0 bg-pink-400/40 font-normal border border-transparent;
 		&:disabled {@apply bg-neutral-700 opacity-40;}
-		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-pink-400;}
+		&:not(:disabled):not([aria-busy="true"]):hover {@apply bg-pink-600;}
 	}
 	&[data-variant="light"] {
 		@apply text-neutral-900 bg-neutral-100 border border-transparent;

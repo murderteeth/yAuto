@@ -16,14 +16,14 @@ export default function Home() {
     <>
       <Header />
       <main className="relative w-6xl max-w-6xl mx-auto flex min-h-screen pt-[6rem] flex-col items-center justify-start gap-8">
-        <div className="w-full px-12 flex items-center justify-between gap-12 bg-pink-900/20 rounded">
-          <div className="w-[40%] py-8 flex items-center justify-center rounded">
-            <Image priority={true} src="/otto.png" alt="yAuto" width={425} height={256} className="p-4 border-2 border-pink-400 rounded" />
+        <div className="w-full p-4 sm:px-12 sm:py-0 flex items-center justify-between gap-12 bg-pink-900/20 rounded">
+          <div className="sm:w-[40%] py-8 hidden sm:flex items-center justify-center rounded">
+            <Image priority={true} src="/otto.png" alt="yAuto" width={425} height={256} className="p-4 border border-pink-400 rounded" />
           </div>
-          <div className="w-[60%] flex flex-col gap-8">
+          <div className="w-full sm:w-[60%] flex flex-col gap-8">
             <h1 className="font-[900] text-6xl">yHaaS Whitelist</h1>
-            <div className="pl-4 flex flex-col gap-2 border-l-4 border-pink-400">
-              <p className="text-xl">
+            <div className="pl-4 flex flex-col gap-2 border-l border-pink-400">
+              <p className="text-xl rainbow-text">
                 You have no strategy anon. Let&apos;s fix that!
               </p>
               <p>
@@ -35,15 +35,15 @@ export default function Home() {
 
         <div className="w-full px-2 sm:px-64 py-6 sm:py-8 flex flex-col gap-4 bg-pink-900/20 rounded">
           <Input type="text" defaultValue="" placeholder="Strategy name" />
-          <Select>
-            <option value="" selected>Select a network..</option>
+          <Select defaultValue={''}>
+            <option value="">Select a network..</option>
             <option value="mainnet">Mainnet</option>
             <option value="polygon">Polygon</option>
           </Select>
           <AddressInput value={address} placeholder='Strategy address 0x..' onChangeValue={setAddress} />
           <Input type="text" defaultValue="" placeholder="Strategy repo url" />
-          <Select>
-            <option value="" selected>Select automation frequency..</option>
+          <Select defaultValue={''}>
+            <option value="">Select automation frequency..</option>
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
