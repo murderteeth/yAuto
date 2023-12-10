@@ -2,18 +2,10 @@
 
 import Hero from './yhaas/Hero'
 import Form from './yhaas/Form'
-import useWhoami from '@/hooks/siwe/useWhoami'
-import useNonce from '@/hooks/siwe/useNonce'
-import { useEffect } from 'react'
+import { useSiwe } from '@/hooks/useSiwe'
 
 export default function Home() {
-  const { fetchNonce } = useNonce()
-  const { whoami, fetchWhoami } = useWhoami()
-
-  useEffect(() => {
-    fetchNonce()
-    fetchWhoami()
-  }, [fetchNonce, fetchWhoami])
+  const { whoami } = useSiwe()
 
   if(whoami) return <main className={`
     relative w-6xl max-w-6xl mx-auto pt-[6rem]

@@ -23,7 +23,6 @@
     "pino-pretty": "^10.2.3",
     "react": "^18",
     "react-dom": "^18",
-    "signals-react-safe": "^1.1.2",
     "siwe": "^2.1.4",
     "viem": "^1.19.11",
     "wagmi": "1.4.7"

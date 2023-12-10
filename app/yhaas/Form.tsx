@@ -1,11 +1,10 @@
 import Signin from '@/components/Signin'
-import { siweSignal } from '@/components/Signin/signals'
 import AddressInput, { TInputAddressLike } from '@/components/controls/AddressInput'
 import Input from '@/components/controls/Input'
 import Select from '@/components/controls/Select'
+import { useSiwe } from '@/hooks/useSiwe'
 import { Button } from '@yearn-finance/web-lib/components/Button'
 import { useCallback, useMemo, useState } from 'react'
-import { useSignalValue } from 'signals-react-safe'
 
 export default function Form() {
   const [name, setName] = useState<string | undefined>(undefined)
@@ -13,11 +12,11 @@ export default function Form() {
   const [address, setAddress] = useState<TInputAddressLike>({ address: undefined, label: '', isValid: false })
   const [repo, setRepo] = useState<string | undefined>(undefined)
   const [frequency, setFrequency] = useState<string | undefined>(undefined)
-  const siweState = useSignalValue(siweSignal)
+  const { whoami, signedIn } = useSiwe()
 
   const disabled = useMemo(() => 
-    !(siweState.address && name && chainId && address.isValid && repo && frequency)
-  , [siweState, name, chainId, address, repo, frequency])
+    !(whoami && name && chainId && address.isValid && repo && frequency)
+  , [whoami, name, chainId, address, repo, frequency])
 
   const submit = useCallback(async () => {
 		await fetch('/api/whitelist', {
@@ -33,8 +32,8 @@ export default function Form() {
     <p className="text-neutral-400">Sign in with your wallet and fill out this form to apply for a yHaaS whitelist.</p>
 
     <div className="px-4 py-2 flex items-center justify-between bg-pink-800/40 text-neutral-400 border border-transparent">
-      <div className={siweState.signedIn ? 'text-neutral-0' : ''}>
-        {siweState.signedIn ? `${siweState.address}` : 'Strategist'}
+      <div className={signedIn ? 'text-neutral-0' : ''}>
+        {signedIn ? `${whoami}` : 'Strategist'}
       </div>
       <div><Signin hideSignOut={true} /></div>
     </div>

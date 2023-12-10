@@ -1,7 +1,5 @@
 'use client'
 
-import useNonce from '@/hooks/siwe/useNonce'
-import useWhoami from '@/hooks/siwe/useWhoami'
 import { useWeb3 } from '@yearn-finance/web-lib/contexts/useWeb3'
 import { useAccountModal, useChainModal, useConnectModal } from '@rainbow-me/rainbowkit'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -9,33 +7,27 @@ import { useSignMessage } from 'wagmi'
 import { SiweMessage } from 'siwe'
 import { IconWallet } from '@yearn-finance/web-lib/icons/IconWallet'
 import { truncateHex } from '@yearn-finance/web-lib/utils/address'
-import { siweSignal } from './signals'
-import { useSignalValue } from 'signals-react-safe'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useSiwe } from '@/hooks/useSiwe'
+import { IconLoader } from '@yearn-finance/web-lib/icons/IconLoader'
 
 export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
 	const { connectModalOpen } = useConnectModal()
 	const { openAccountModal, accountModalOpen } = useAccountModal()
 	const { openChainModal, chainModalOpen } = useChainModal()
 	const { isActive, address, chainID: chainId, ens, lensProtocolHandle, openLoginModal } = useWeb3()
-	const [walletIdentity, set_walletIdentity] = useState<string | undefined>(undefined)
+	const [ walletIdentity, set_walletIdentity ] = useState<string | undefined>(undefined)
 	const { signMessageAsync } = useSignMessage()
-	const { nonce, fetchNonce } = useNonce()
-	const { whoami, fetchWhoami } = useWhoami()
-	const [accountModelOpened, set_accountModelOpened] = useState<boolean>(false)
-  const siweState = useSignalValue(siweSignal)
+	const [ accountModelOpened, set_accountModelOpened ] = useState<boolean>(false)
+  const { nonce, verifying, signedIn, fetchNonce, fetchWhoami, setSigningIn, setVerifying } = useSiwe()
 
 	useEffect(() => {
-		siweSignal.value = { ...siweSignal.value, signingIn: connectModalOpen || accountModalOpen || chainModalOpen }
-	}, [connectModalOpen, accountModalOpen, chainModalOpen])
-
-	useEffect(() => {
-		siweSignal.value = { ...siweSignal.value, signedIn: Boolean(whoami), address: whoami || undefined }
-	}, [whoami])
+    setSigningIn(connectModalOpen || accountModalOpen || chainModalOpen)
+	}, [setSigningIn, connectModalOpen, accountModalOpen, chainModalOpen])
 
 	const signIn = useCallback(async () => {
 		if(!(address && chainId)) return
-		siweSignal.value = { ...siweSignal.value, signingIn: true }
+    setSigningIn(true)
 
 		const message = new SiweMessage({
 			domain: window.location.host,
@@ -51,18 +43,19 @@ export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
 			message: message.prepareMessage()
 		})
 
+    setVerifying(true)
 		const verify = await fetch('/api/siwe/verify', {
 			method: 'POST', 
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ message, signature })
 		})
+    setVerifying(false)
 
-		if(!verify.ok) throw new Error('Bad message!!')
-
-		siweSignal.value = { ...siweSignal.value, signingIn: false, signedIn: true, address }
+    if(!verify.ok) throw new Error('Bad message!!')
 
     fetchWhoami()
-	}, [address, chainId, nonce, signMessageAsync, fetchWhoami])
+    setSigningIn(false)
+  }, [setSigningIn, address, chainId, nonce, signMessageAsync, fetchWhoami, setVerifying])
 
 	const signOut = useCallback(async () => {
 		await fetch('/api/siwe/signout', {
@@ -70,11 +63,10 @@ export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
 			headers: { 'Content-Type': 'application/json' }
 		})
 
-		siweSignal.value = { ...siweSignal.value, signingIn: false, signedIn: false, address: undefined }
-
     fetchNonce()
     fetchWhoami()
-	}, [fetchNonce, fetchWhoami])
+    setSigningIn(false)
+  }, [fetchNonce, fetchWhoami, setSigningIn])
 
 	useEffect((): void => {
 		if (!isActive && address) {
@@ -93,15 +85,15 @@ export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
 
 	const label = useMemo(() => {
 		if(!walletIdentity) return 'Connect wallet'
-		if(!siweState.signedIn) return `Sign in to yAuto as ${walletIdentity}`
+		if(!signedIn) return `Sign in to yAuto as ${walletIdentity}`
 		return `signed in as ${walletIdentity}`
-	}, [walletIdentity, siweState])
+	}, [walletIdentity, signedIn])
 
 	return (
-		<div className={`relative ${siweState.signedIn && hideSignOut ? 'hidden' : ''}`}
+		<div className={`relative ${signedIn && hideSignOut ? 'hidden' : ''}`}
 			onClick={() => {
 				if (isActive) {
-					if(siweState.signedIn) {
+					if(signedIn) {
 						openAccountModal?.()
 						set_accountModelOpened(true)
 					} else {
@@ -114,7 +106,7 @@ export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
 				}
 			}}>
       <AnimatePresence initial={false}>
-        {isActive && !siweState.signedIn && <motion.div 
+        {isActive && !signedIn && !verifying && <motion.div 
           transition={{type: 'spring', stiffness: 2000, damping: 32}}
           initial={{y: 6, opacity: 0}}
           animate={{y: 0, opacity: 1}}
@@ -122,9 +114,18 @@ export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
           className={'absolute top-2 -left-12 text-xs text-neutral-0/20 whitespace-nowrap'}>
           step 2
         </motion.div>}
+        {isActive && !signedIn && verifying && <motion.div 
+          transition={{type: 'spring', stiffness: 2000, damping: 32}}
+          initial={{y: 6, opacity: 0}}
+          animate={{y: 0, opacity: 1}}
+          exit={{y: 6, opacity: 0}}
+          className={'absolute top-0 -left-8 text-xs text-neutral-0/20 whitespace-nowrap'}>
+          <IconLoader className={'h-6 w-6 animate-spin text-neutral-0'} />
+        </motion.div>}
+
       </AnimatePresence>
 			<p suppressHydrationWarning className={'yearn--header-nav-item !text-xs md:!text-sm'}>
-				{siweState.signedIn ? label : (
+				{signedIn ? label : (
 					<span>
 						<IconWallet className={'yearn--header-nav-item mt-0.5 block h-4 w-4 md:hidden'} />
 						<span className={`relative hidden md:flex h-8 cursor-pointer items-center justify-center
