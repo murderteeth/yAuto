@@ -1,20 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { useAccountModal, useChainModal } from '@rainbow-me/rainbowkit'
 import { ModalMobileMenu } from '@yearn-finance/web-lib/components/ModalMobileMenu'
-import { useWeb3 } from '@yearn-finance/web-lib/contexts/useWeb3'
-import { IconWallet } from '@yearn-finance/web-lib/icons/IconWallet'
-import { truncateHex } from '@yearn-finance/web-lib/utils/address'
 import { LogoPopover } from './HeaderPopover'
 import type { ReactElement } from 'react'
 import { usePathname } from 'next/navigation'
-import { useSignMessage } from 'wagmi'
-import { SiweMessage } from 'siwe'
+import Signin from '../Signin'
 
-type TMenu = {path: string, label: string | ReactElement, target?: string}
-type TNavbar = {nav: TMenu[], currentPathName: string}
+type TMenu = { path: string, label: string | ReactElement, target?: string }
+type TNavbar = { nav: TMenu[], currentPathName: string }
 
-function Navbar({nav, currentPathName}: TNavbar): ReactElement {
+function Navbar({ nav, currentPathName }: TNavbar): ReactElement {
 	return (
 		<nav className={'yearn--nav'}>
 			{nav.map(
@@ -33,140 +28,9 @@ function Navbar({nav, currentPathName}: TNavbar): ReactElement {
 	)
 }
 
-function useNonce() {
-	const [state, set_state] = useState<string | undefined>(undefined)
-	const updateState = useCallback(async () => {
-		set_state((await(await fetch('/api/siwe/nonce')).json()).nonce)
-	}, [set_state])
-	useEffect(() => { updateState() }, [updateState])
-	return { nonce: state, refreshNonce: updateState }
-}
-
-function useWhoami() {
-	const [state, set_state] = useState<string | undefined>(undefined)
-	const updateState = useCallback(async () => {
-		set_state((await(await fetch('/api/siwe/whoami')).json()).address)
-	}, [set_state])
-	useEffect(() => { updateState() }, [updateState])
-	return state
-}
-
-type SiweState = { 
-	signingIn: boolean
-	signedIn: boolean
-}
-
-function WalletSelector(): ReactElement {
-	const {openAccountModal} = useAccountModal()
-	const {openChainModal} = useChainModal()
-	const {isActive, address, chainID: chainId, ens, lensProtocolHandle, openLoginModal} = useWeb3()
-	const [walletIdentity, set_walletIdentity] = useState<string | undefined>(undefined)
-	const { signMessageAsync } = useSignMessage()
-	const { nonce, refreshNonce } = useNonce()
-	const whoami = useWhoami()
-	const [siweState, set_siweState] = useState<SiweState>({ signingIn: false, signedIn: false })
-	const [accountModelOpened, set_accountModelOpened] = useState<boolean>(false)
-
-	useEffect(() => {
-		set_siweState(current => ({ ...current, signedIn: Boolean(whoami) }))
-	}, [whoami, set_siweState])
-
-	const signIn = useCallback(async () => {
-		if(!(address && chainId)) return
-		set_siweState(current => ({ ...current, signingIn: true }))
-
-		const message = new SiweMessage({
-			domain: window.location.host,
-			address,
-			statement: 'Sign in to yAuto with your wallet',
-			uri: window.location.origin,
-			version: '1',
-			chainId,
-			nonce
-		})
-
-		const signature = await signMessageAsync({
-			message: message.prepareMessage(),
-		})
-
-		const verify = await fetch('/api/siwe/verify', {
-			method: 'POST', 
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ message, signature })
-		})
-
-		if(!verify.ok) throw new Error('Bad message!!')
-
-		set_siweState(current => ({ ...current, signingIn: false, signedIn: true }))
-	}, [address, chainId, nonce, signMessageAsync])
-
-	const signOut = useCallback(async () => {
-		await fetch('/api/siwe/signout', {
-			method: 'POST', 
-			headers: { 'Content-Type': 'application/json' }
-		})
-		set_siweState(current => ({ ...current, signedIn: false }))
-		refreshNonce()
-	}, [set_siweState, refreshNonce])
-
-	useEffect((): void => {
-		if (!isActive && address) {
-			set_walletIdentity('Invalid Network')
-		} else if (ens) {
-			set_walletIdentity(ens)
-		} else if (lensProtocolHandle) {
-			set_walletIdentity(lensProtocolHandle)
-		} else if (address) {
-			set_walletIdentity(truncateHex(address, 4))
-		} else {
-			set_walletIdentity(undefined)
-			if(accountModelOpened) signOut()
-		}
-	}, [ens, lensProtocolHandle, address, isActive, accountModelOpened, signOut])
-
-	const label = useMemo(() => {
-		if(!walletIdentity) return 'Connect wallet'
-		if(!siweState.signedIn) return `Sign in to yAuto as ${walletIdentity}`
-		return `signed in as ${walletIdentity}`
-	}, [walletIdentity, siweState])
-
-	return (
-		<div
-			onClick={(): void => {
-				if (isActive) {
-					if(siweState.signedIn) {
-						openAccountModal?.()
-						set_accountModelOpened(true)
-					} else {
-						signIn()
-					}
-				} else if (!isActive && address) {
-					openChainModal?.()
-				} else {
-					openLoginModal()
-				}
-			}}>
-			<p
-				suppressHydrationWarning
-				className={'yearn--header-nav-item !text-xs md:!text-sm'}>
-				{walletIdentity && siweState.signedIn ? label : (
-					<span>
-						<IconWallet className={'yearn--header-nav-item mt-0.5 block h-4 w-4 md:hidden'} />
-						<span
-							className={`relative hidden md:flex h-8 cursor-pointer items-center justify-center
-								border border-transparent bg-neutral-0 
-								px-2 text-xs font-normal text-neutral-900 transition-all rounded`}>
-							{label}
-						</span>
-					</span>
-				)}
-			</p>
-		</div>
-	)
-}
-
 const nav: TMenu[] = [
-	{path: 'https://github.com/mil0xeth/yHaaS', label: 'GitHub', target: '_blank'}
+	{ path: '/', label: 'Home' },
+	{ path: '/yhaas', label: 'yHaaS' }
 ]
 
 function Header(): ReactElement {
@@ -224,7 +88,7 @@ function Header(): ReactElement {
 						<LogoPopover />
 					</div>
 					<div className={'flex w-1/3 items-center justify-end'}>
-						<WalletSelector />
+						<Signin />
 					</div>
 				</header>
 			</div>

@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import '@rainbow-me/rainbowkit/styles.css'
 import './globals.css'
 import './yearn.css'
+import YWrapper from './ywrapper'
 
 const sans = localFont({
   variable: '--font-aeonik-sans',
@@ -41,7 +42,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body><YWrapper>{children}</YWrapper></body>
     </html>
   )
 }

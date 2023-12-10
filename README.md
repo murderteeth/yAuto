@@ -33,6 +33,9 @@ down - `bun migrate down [-c count|...]`
 make down
 ```
 
+## siwe
+Uses [siwe](https://www.npmjs.com/package/siwe) and [ironSession](https://www.npmjs.com/package/iron-session) to implement Sign-In with Ethereum, [eip-4361](https://eips.ethereum.org/EIPS/eip-4361).
+
 
 ## production
 ```sh
