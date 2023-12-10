@@ -11,9 +11,10 @@ CREATE TABLE IF NOT EXISTS yhaas_whitelist_form (
   strategy_name text NOT NULL,
   strategy_code_url text NOT NULL,
   harvest_frequency text NOT NULL,
-  github_issue_id text NOT NULL,
-  approved boolean NOT NULL DEFAULT false,
+  github_issue_url text NOT NULL,
+  github_issue_html_url text NOT NULL,
+  github_issue_labels text[] NOT NULL,
   create_time timestamptz NOT NULL,
   update_time timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT yhaas_whitelist_form_pkey PRIMARY KEY (chain_id, strategist_address, strategy_address, github_issue_id)
+  CONSTRAINT yhaas_whitelist_form_pkey PRIMARY KEY (chain_id, strategist_address, strategy_address, github_issue_url)
 );

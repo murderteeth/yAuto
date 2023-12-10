@@ -16,9 +16,9 @@ export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
 	const { openAccountModal, accountModalOpen } = useAccountModal()
 	const { openChainModal, chainModalOpen } = useChainModal()
 	const { isActive, address, chainID: chainId, ens, lensProtocolHandle, openLoginModal } = useWeb3()
-	const [ walletIdentity, set_walletIdentity ] = useState<string | undefined>(undefined)
+	const [walletIdentity, set_walletIdentity] = useState<string | undefined>(undefined)
 	const { signMessageAsync } = useSignMessage()
-	const [ accountModelOpened, set_accountModelOpened ] = useState<boolean>(false)
+	const [accountModelOpened, set_accountModelOpened] = useState<boolean>(false)
   const { nonce, verifying, signedIn, fetchNonce, fetchWhoami, setSigningIn, setVerifying } = useSiwe()
 
 	useEffect(() => {

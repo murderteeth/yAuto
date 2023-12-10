@@ -3,16 +3,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { SessionData, sessionOptions } from '../siwe/session'
 import { cookies } from 'next/headers'
 import { db } from '../db'
+import { postIssue } from './gh'
+import makeIssueMarkdown from './issue'
+import { networks } from '@/lib/networks'
 
 export async function POST(request: NextRequest) {  
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
   const strategist = session.siwe?.data.address
-  const issueId = 0
-
   const { name, chainId, address, repo, frequency } = await request.json()
-
-  console.log('strategist, name, chainId, address, repo, frequency, issueId')
-  console.log(strategist, name, chainId, address, repo, frequency, issueId)
+  const network = networks(parseInt(chainId))
+  const md = makeIssueMarkdown(name, parseInt(chainId), address, repo, frequency)
+  const { url, html_url, labels } = await postIssue(name, md, [network.name.toLowerCase()])
 
   await db.query(`INSERT INTO yhaas_whitelist_form (
     chain_id, 
@@ -21,11 +22,12 @@ export async function POST(request: NextRequest) {
     strategy_name, 
     strategy_code_url, 
     harvest_frequency, 
-    github_issue_id, 
-    approved, 
+    github_issue_url,
+    github_issue_html_url, 
+    github_issue_labels,
     create_time
   ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP
   );`, [
     chainId, 
     strategist, 
@@ -33,8 +35,9 @@ export async function POST(request: NextRequest) {
     name, 
     repo, 
     frequency, 
-    issueId,
-    false
+    url,
+    html_url,
+    labels
   ])
 
   return NextResponse.json({ ok: true })
