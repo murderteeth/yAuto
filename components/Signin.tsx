@@ -10,6 +10,7 @@ import { truncateHex } from '@yearn-finance/web-lib/utils/address'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useSiwe } from '@/hooks/useSiwe'
 import { IconLoader } from '@yearn-finance/web-lib/icons/IconLoader'
+import { toast } from '@yearn-finance/web-lib/components/yToast'
 
 export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
 	const { connectModalOpen } = useConnectModal()
@@ -20,7 +21,7 @@ export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
 	const { signMessageAsync } = useSignMessage()
 	const [accountModelOpened, set_accountModelOpened] = useState<boolean>(false)
   const { nonce, verifying, signedIn, fetchNonce, fetchWhoami, setSigningIn, setVerifying } = useSiwe()
-
+' '
 	useEffect(() => {
     setSigningIn(connectModalOpen || accountModalOpen || chainModalOpen)
 	}, [setSigningIn, connectModalOpen, accountModalOpen, chainModalOpen])
@@ -51,7 +52,10 @@ export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
 		})
     setVerifying(false)
 
-    if(!verify.ok) throw new Error('Bad message!!')
+    if(!verify.ok) {
+			toast({ type: 'error', content: `There was an error signing you in. Please try again!` })
+			throw new Error('Bad message!!')
+		}
 
     fetchWhoami()
     setSigningIn(false)
@@ -122,7 +126,6 @@ export default function Signin({ hideSignOut }: { hideSignOut?: boolean }) {
           className={'absolute top-0 -left-8 text-xs text-neutral-0/20 whitespace-nowrap'}>
           <IconLoader className={'h-6 w-6 animate-spin text-neutral-0'} />
         </motion.div>}
-
       </AnimatePresence>
 			<p suppressHydrationWarning className={'yearn--header-nav-item !text-xs md:!text-sm'}>
 				{signedIn ? label : (
