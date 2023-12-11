@@ -31,8 +31,11 @@ export default function SiweProvider({ children }: { children: ReactNode }) {
 
   const fetchWhoami = useCallback(async () => {
     const result = (await(await fetch('/api/siwe/whoami')).json()).address
-    if(result === null || result === undefined || result === '') return setWhoami(undefined)
-    setWhoami(result)
+    if(result === null || result === undefined || result === '') {
+      setWhoami(undefined)
+    } else {
+      setWhoami(result)
+    }
   }, [setWhoami])
 
   useEffect(() => {

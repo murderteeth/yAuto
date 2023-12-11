@@ -6,6 +6,8 @@ import { useSiwe } from '@/hooks/useSiwe'
 import { Button } from '@yearn-finance/web-lib/components/Button'
 import { useCallback, useMemo, useState } from 'react'
 import { toast } from '@yearn-finance/web-lib/components/yToast'
+import { useUser } from '@/hooks/useUser'
+import { useRouter } from 'next/navigation'
 
 export default function Form() {
   const [name, setName] = useState<string | undefined>(undefined)
@@ -15,6 +17,8 @@ export default function Form() {
   const [frequency, setFrequency] = useState<string | undefined>(undefined)
   const { whoami, signedIn } = useSiwe()
   const [submitting, setSubmitting] = useState(false)
+  const { fetchStrategies } = useUser()
+  const router = useRouter()
 
   const disabled = useMemo(() => 
     !(whoami && name && chainId && address.isValid && repo && frequency)
@@ -31,19 +35,21 @@ export default function Form() {
         })
       })
       toast({ type: 'success', content: `You have succesfully applied for yHaaS whitelisting. Your application will be reviewed soon!` })
+      fetchStrategies()
+      router.push('/')
     } catch (error) {
       console.error(error)
       toast({ type: 'error', content: `error: ${error}}` })
     } finally {
       setSubmitting(false)
     }
-  }, [setSubmitting, name, chainId, address, repo, frequency])
+  }, [setSubmitting, name, chainId, address, repo, frequency, fetchStrategies, router])
 
   return <div className="w-full px-2 sm:px-64 py-6 sm:py-8 flex flex-col gap-4 bg-pink-900/20 rounded">
     <p className="text-neutral-400">Sign in and fill out this form to apply for the yHaaS whitelist!</p>
 
     <div className="px-4 py-2 flex items-center justify-between bg-pink-800/40 text-neutral-400 border border-transparent">
-      <div className={signedIn ? 'text-neutral-0' : ''}>
+      <div className={signedIn ? 'text-neutral-0 text-ellipsis overflow-hidden' : ''}>
         {signedIn ? `${whoami}` : 'Strategist'}
       </div>
       <div><Signin hideSignOut={true} /></div>

@@ -5,6 +5,7 @@ import { cookies } from 'next/headers'
 
 export const config = {
   matcher: [
+    '/api/user/:function*',
     '/api/whitelist/:function*'
   ],
 }

@@ -25,8 +25,10 @@
     "react": "^18",
     "react-dom": "^18",
     "siwe": "^2.1.4",
+    "swr": "^2.2.4",
     "viem": "^1.19.11",
-    "wagmi": "1.4.7"
+    "wagmi": "1.4.7",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/chai": "^4.3.11",

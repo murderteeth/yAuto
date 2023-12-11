@@ -33,7 +33,9 @@ make dev
 
 ## db-migrate cheats
 **create** - `bun migrate create <migration-name> --sql-file`
+
 **up** - `bun migrate up [name|-c count|...]`
+
 **down** - `bun migrate down [-c count|...]`
 
 

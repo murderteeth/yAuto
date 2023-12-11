@@ -17,7 +17,7 @@ function appToken() {
   }, pk, { algorithm: 'RS256' })
 }
 
-async function fetchInstallationToken() {
+export async function fetchInstallationToken() {
   const installationTokenResponse = await fetch(
     `https://api.github.com/app/installations/${installationId}/access_tokens`,
     {
@@ -29,13 +29,14 @@ async function fetchInstallationToken() {
       },
     }
   )
-  return (await installationTokenResponse.json()).token
+  return (await installationTokenResponse.json()).token as string
 }
 
 export async function postIssue(title: string, body: string, labels: string[]) : Promise<{
   url: string
   html_url: string
   labels: string[]
+  state: string
 }> {
   const response = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/issues`, 
@@ -48,5 +49,41 @@ export async function postIssue(title: string, body: string, labels: string[]) :
       body: JSON.stringify({ title, body, assignees: [], labels })
     }
   )
-  return response.json()
+
+  const json = await response.json()
+
+  return {
+    url: json.url,
+    html_url: json.html_url,
+    labels: json.labels.map((l: any) => l.name),
+    state: json.state
+  }
+}
+
+export async function fetchIssue(url: string, installationToken?: string) : Promise<{
+  url: string
+  html_url: string
+  labels: string[]
+  state: string
+}> {
+  if(!installationToken) installationToken = await fetchInstallationToken()
+  const response = await fetch(
+    url,
+    { method: 'GET',
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': `Bearer ${installationToken}`,
+        'X-GitHub-Api-Version': ghApiVersion,
+      }
+    }
+  )
+
+  const json = await response.json()
+
+  return {
+    url: json.url,
+    html_url: json.html_url,
+    labels: json.labels.map((l: any) => l.name),
+    state: json.state
+  }
 }
