@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { useAccountModal, useChainModal } from '@rainbow-me/rainbowkit'
 import { ModalMobileMenu } from '@yearn-finance/web-lib/components/ModalMobileMenu'
-import { useWeb3 } from '@yearn-finance/web-lib/contexts/useWeb3'
-import { IconWallet } from '@yearn-finance/web-lib/icons/IconWallet'
-import { truncateHex } from '@yearn-finance/web-lib/utils/address'
 import { LogoPopover } from './HeaderPopover'
 import type { ReactElement } from 'react'
 import { usePathname } from 'next/navigation'
+import Signin from '../Signin'
 
-type TMenu = {path: string, label: string | ReactElement, target?: string}
-type TNavbar = {nav: TMenu[], currentPathName: string}
+type TMenu = { path: string, label: string | ReactElement, target?: string }
+type TNavbar = { nav: TMenu[], currentPathName: string }
 
-function Navbar({nav, currentPathName}: TNavbar): ReactElement {
+function Navbar({ nav, currentPathName }: TNavbar): ReactElement {
 	return (
 		<nav className={'yearn--nav'}>
 			{nav.map(
@@ -31,60 +28,9 @@ function Navbar({nav, currentPathName}: TNavbar): ReactElement {
 	)
 }
 
-function WalletSelector(): ReactElement {
-	const {openAccountModal} = useAccountModal()
-	const {openChainModal} = useChainModal()
-	const {isActive, address, ens, lensProtocolHandle, openLoginModal} = useWeb3()
-	const [walletIdentity, set_walletIdentity] = useState<string | undefined>(undefined)
-
-	useEffect((): void => {
-		if (!isActive && address) {
-			set_walletIdentity('Invalid Network')
-		} else if (ens) {
-			set_walletIdentity(ens)
-		} else if (lensProtocolHandle) {
-			set_walletIdentity(lensProtocolHandle)
-		} else if (address) {
-			set_walletIdentity(truncateHex(address, 4))
-		} else {
-			set_walletIdentity(undefined)
-		}
-	}, [ens, lensProtocolHandle, address, isActive])
-
-	return (
-		<div
-			onClick={(): void => {
-				if (isActive) {
-					openAccountModal?.()
-				} else if (!isActive && address) {
-					openChainModal?.()
-				} else {
-					openLoginModal()
-				}
-			}}>
-			<p
-				suppressHydrationWarning
-				className={'yearn--header-nav-item !text-xs md:!text-sm'}>
-				{walletIdentity ? (
-					walletIdentity
-				) : (
-					<span>
-						<IconWallet className={'yearn--header-nav-item mt-0.5 block h-4 w-4 md:hidden'} />
-						<span
-							className={`relative hidden h-8 cursor-pointer items-center justify-center
-								border border-transparent bg-neutral-0 
-								px-2 text-xs font-normal text-neutral-900 transition-all md:flex rounded`}>
-							{'Connect wallet'}
-						</span>
-					</span>
-				)}
-			</p>
-		</div>
-	)
-}
-
 const nav: TMenu[] = [
-	{path: 'https://github.com/mil0xeth/yHaaS', label: 'GitHub', target: '_blank'}
+	{ path: '/', label: 'Home' },
+	{ path: '/yhaas', label: 'yHaaS' }
 ]
 
 function Header(): ReactElement {
@@ -142,7 +88,7 @@ function Header(): ReactElement {
 						<LogoPopover />
 					</div>
 					<div className={'flex w-1/3 items-center justify-end'}>
-						<WalletSelector />
+						<Signin />
 					</div>
 				</header>
 			</div>

@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.rainbow-text {
+  @apply bg-gradient-to-r 
+  from-pink-400 to-green-200
+  bg-clip-text text-transparent;
+}
+
+.rainbow-bg {
+  @apply bg-gradient-to-r 
+  from-purple-500 to-pink-500;
+}
+
+.gradient {
+	@apply bg-clip-text text-transparent;
+	background-image: -webkit-linear-gradient(
+		0deg,
+		rgba(200, 25, 40, 1) 0%,
+		rgba(219, 110, 55, 1) 20%,
+		rgba(236, 184, 64, 1) 40%,
+		rgba(104, 183, 120, 1) 60%,
+		rgba(71, 119, 211, 1) 80%,
+		rgba(72, 44, 216, 1) 100%
+	);
+}
+
 body {
-  @apply bg-neutral-900 text-neutral-0;
+  @apply min-h-screen pb-20 bg-neutral-900 text-neutral-0;
 }
