@@ -2,7 +2,7 @@
 
 import { ReactNode, createContext, useContext, useMemo } from 'react'
 import { useSiwe } from './useSiwe'
-import { Strategy } from '@/lib/types/Strategy'
+import { Strategy, StrategySchema } from '@/lib/types/Strategy'
 import useSWR from 'swr'
 
 export interface UserContext {
@@ -34,9 +34,9 @@ function useStrategies() {
   )
 
   const strategies = useMemo(() => {
-    const result = data?.strategies
-    if(result === null || result === undefined) return undefined
-    return result
+    const result = StrategySchema.array().safeParse(data?.strategies)
+    if(result.success) return result.data
+    return undefined
   }, [data])
 
   return { strategies, fetchStrategies: mutate }

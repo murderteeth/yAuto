@@ -10,15 +10,15 @@ import { postIssue } from '@/lib/github'
 export async function POST(request: NextRequest) {  
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
   const strategist = session.siwe?.data.address
-  const { name, chainId, address, repo, frequency } = await request.json()
+  const { name, chainId, addresses, repo, frequency } = await request.json()
   const network = networks(parseInt(chainId))
-  const md = makeIssueMarkdown(name, parseInt(chainId), address, repo, frequency)
+  const md = makeIssueMarkdown(name, parseInt(chainId), addresses, repo, frequency)
   const { url, html_url, labels, state } = await postIssue(name, md, [network.name.toLowerCase()])
 
   await db.query(`INSERT INTO yhaas_whitelist_form (
     chain_id, 
     strategist_address, 
-    strategy_address, 
+    strategy_addresses, 
     strategy_name, 
     strategy_code_url, 
     harvest_frequency, 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
   );`, [
     chainId, 
     strategist, 
-    address, 
+    addresses, 
     name, 
     repo, 
     frequency, 
