@@ -13,6 +13,7 @@ cp .env.example .env
 make dev
 ```
 
+
 ## env
 **POSTGRES_** - postgres connection info (defaults are gud for local dev)
 
@@ -21,7 +22,7 @@ make dev
 **GITHUB_APP_** - github app connection info, [https://docs.github.com/en/apps/overview](https://docs.github.com/en/apps/overview)
 
 
-## tmux cheats
+## tmux
 **quit** - `ctrl+b`, `:` then `kill-session` (your dev environment will also shutdown gracefully)
 
 **pane navigation** - `ctrl+b` then `arrow keys`
@@ -30,8 +31,10 @@ make dev
 
 **scroll** - `ctrl+b` then `[` then `arrow keys` or `page up\down keys` then `q` to quit scroll mode
 
+**more** - [tmux shortcuts & cheatsheet](https://gist.github.com/MohamedAlaa/2961058)
 
-## db-migrate cheats
+
+## database migrations
 **create** - `bun migrate create <migration-name> --sql-file`
 
 **up** - `bun migrate up [name|-c count|...]`

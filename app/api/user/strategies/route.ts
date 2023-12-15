@@ -5,7 +5,6 @@ import { cookies } from 'next/headers'
 import { db } from '../../db'
 import { Strategy, StrategySchema } from '@/lib/types/Strategy'
 import { fetchInstallationToken, fetchIssue } from '@/lib/github'
-import { useMemo } from 'react'
 
 export async function POST(request: NextRequest) {  
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
@@ -21,7 +20,7 @@ async function fetchStrategies(strategist: string) {
   SELECT
     chain_id AS "chainId",
     strategist_address AS "strategistAddress",
-    strategy_address AS "strategyAddress",
+    strategy_addresses AS "strategyAddresses",
     strategy_name AS "strategyName",
     strategy_code_url AS "strategyCodeUrl",
     harvest_frequency AS "harvestFrequency",
@@ -41,15 +40,15 @@ async function fetchStrategies(strategist: string) {
 
 async function syncWithGithub(strategies: Strategy[]) {
   const token = await fetchInstallationToken()
-  const open = strategies.filter(s => s.githubIssueState === 'open')
-  for(const strategy of open) {
-    const { labels, state } = await fetchIssue(strategy.githubIssueUrl, token)
+  for(const strategy of strategies) {
+    const issue = await fetchIssue(strategy.githubIssueUrl, token)
+    const { labels, state } = issue
 
     await db.query(`
     UPDATE yhaas_whitelist_form 
     SET github_issue_labels = $1, github_issue_state = $2 
-    WHERE chain_id = $3 AND strategist_address = $4 AND strategy_address = $5 AND github_issue_url = $6;`, 
-    [labels, state, strategy.chainId, strategy.strategistAddress, strategy.strategyAddress, strategy.githubIssueUrl])
+    WHERE chain_id = $3 AND strategist_address = $4 AND strategy_addresses = $5 AND github_issue_url = $6;`, 
+    [labels, state, strategy.chainId, strategy.strategistAddress, strategy.strategyAddresses, strategy.githubIssueUrl])
 
     strategy.githubIssueLabels = labels
     strategy.githubIssueState = state

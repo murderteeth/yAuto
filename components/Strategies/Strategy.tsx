@@ -17,9 +17,14 @@ function Tag({ tag, className }: { tag: string, className?: string }) {
 export default function Strategy({ strategy }: { strategy: Strategy }) {
   const network = useMemo(() => networks(strategy.chainId), [strategy])
 
+  const firstStrategy = useMemo(() => {
+    if(!strategy.strategyAddresses.length) return ''
+    return strategy.strategyAddresses[0]
+  }, [strategy])
+
   const explorerUrl = useMemo(() => {
-    return `${network.blockExplorers.default.url}/address/${strategy.strategyAddress}`
-  }, [network, strategy])
+    return `${network.blockExplorers.default.url}/address/${firstStrategy}`
+  }, [network, firstStrategy])
 
   const status = useMemo(() => {
     const closed = strategy.githubIssueState === 'closed'
@@ -41,7 +46,7 @@ export default function Strategy({ strategy }: { strategy: Strategy }) {
       <div className="pr-4 flex items-center gap-2">
         <Tag tag={network.name} />
         <div className="text-xs">
-          <A href={explorerUrl} target="_blank" rel="noopener noreferrer" className="a">{truncateHex(strategy.strategyAddress, 4)}</A>
+          <A href={explorerUrl} target="_blank" rel="noopener noreferrer" className="a">{truncateHex(firstStrategy, 4)}</A>
         </div>
       </div>
     </div>

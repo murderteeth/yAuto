@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const StrategySchema = z.object({
   chainId: z.number(),
   strategistAddress: z.string(),
-  strategyAddress: z.string(),
+  strategyAddresses: z.array(z.string()),
   strategyName: z.string(),
   strategyCodeUrl: z.string(),
   harvestFrequency: z.string(),
@@ -11,8 +11,8 @@ export const StrategySchema = z.object({
   githubIssueHtmlUrl: z.string(),
   githubIssueLabels: z.array(z.string()),
   githubIssueState: z.string(),
-  createTime: z.date(),
-  updateTime: z.date(),
+  createTime: z.date({ coerce: true }),
+  updateTime: z.date({ coerce: true }),
 })
 
 export type Strategy = z.infer<typeof StrategySchema>
