@@ -13,7 +13,7 @@ export default function Hero() {
           You have no strategy anon. Let&apos;s fix that!
         </p>
         <p>
-          TODO: Here&apos;s some more info about yHaaS. IE, what it stands for, what it does, why that&apos;s important, and how to register.
+          Automate all your strategy&apos;s harvests/reports/rebalancing/tending with ease!
         </p>
         <p>
           <A href="https://github.com/mil0xeth/yHaaS" target="_blank" rel="noopener noreferrer" className="a">github</A>
